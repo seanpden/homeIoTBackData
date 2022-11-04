@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 import random
 
 class Sim:
-    def __init__(self, weeks = 26) -> None:
+    def __init__(self, should_get = False, weeks = 26) -> None:
         self.hs = House()
         self.end = datetime.now()
         self.start = self.end + timedelta(weeks=-weeks)
@@ -308,7 +308,8 @@ class Sim:
         
         self.hs.toggle_fridge(datetime(self.start.year, self.start.month, self.start.day, self.start.hour, self.start.minute), 150*24*7*self.weeks)
 
-        self.hs.get_df().to_html()
+    def get_wrapper(self):
+        return self.hs.get_df()
 
 if __name__ == "__main__":
     sm = Sim()
