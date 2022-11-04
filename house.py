@@ -14,8 +14,8 @@ class House:
         self.bedroom_overhead_light = False # DONE
         self.bedroom_lamp_one = False # DONE
         self.bedroom_lamp_two = False # DONE
-        self.bath_light_one = False
-        self.bath_light_two = False
+        self.bath_light_one = False #DONE
+        self.bath_light_two = False #DONE
         self.lr_overhead_light = False
         self.lr_lamp_one = False
         self.lr_lamp_two = False
@@ -26,8 +26,8 @@ class House:
         self.lr_tv = False # 636 watts, 4hr/day MF, 8hr/day SS
 
         # Baths - Exhaust fans 30 w
-        self.bath = False # 2/day MF, 3/day SS. 30 gallons (65% hot, 35% cold)
-        self.shower = False # 2/day MF, 3/day SS. 25 gallons (65% hot, 35% cold)
+        self.bath = False # 2/day MF, 3/day SS. 30 gallons (65% hot, 35% cold) DONE
+        self.shower = False # 2/day MF, 3/day SS. 25 gallons (65% hot, 35% cold) DONE
 
         # Appliances
         self.washer = False # 500 watts, 4 loads a week, 30 min, 20 gallons (85% hot)
@@ -37,6 +37,7 @@ class House:
         self.oven = False # 4000 watts, 45 min/day MF, 60 min/day SS
         self.microwave = False # 1100w, 20 min/day MF, 30 min/day SS
         self.fridge = False # 150w
+        self.htwater = False # 4500w
         self.hvac = False # 3500w
 
         self.df = {"Time": [], "Device": [], "Action": [], "Water Usage": [], "Electric Usage": []}
@@ -177,14 +178,81 @@ class House:
             self.df.loc[len(self.df.index)] = [timestamp, "bath", "On", 0, 0]
         else:
             self.df.loc[len(self.df.index)] = [timestamp, "bath", "Off", wtr, 0]
+
+    def toggle_htwater(self, timestamp, wtr, elect):
+        self.htwater = not self.htwater
+
+        if self.htwater == True:
+            self.df.loc[len(self.df.index)] = [timestamp, "water heater", "On", 0, 0]
+        else:
+            self.df.loc[len(self.df.index)] = [timestamp, "water heater", "Off", wtr, elect]
     
     def toggle_shower(self, timestamp, wtr):
         self.shower = not self.shower
 
-        if self.bath == True:
+        if self.shower == True:
             self.df.loc[len(self.df.index)] = [timestamp, "shower", "On", 0, 0]
         else:
             self.df.loc[len(self.df.index)] = [timestamp, "shower", "Off", wtr, 0]
+
+    def toggle_washer(self, timestamp, wtr, elect):
+        self.washer = not self.washer
+
+        if self.washer == True:
+            self.df.loc[len(self.df.index)] = [timestamp, "washer", "On", 0, 0]
+        else:
+            self.df.loc[len(self.df.index)] = [timestamp, "washer", "Off", wtr, elect]
+
+    def toggle_dryer(self, timestamp, elect):
+        self.dryer = not self.dryer
+
+        if self.dryer == True:
+            self.df.loc[len(self.df.index)] = [timestamp, "dryer", "On", 0, 0]
+        else:
+            self.df.loc[len(self.df.index)] = [timestamp, "dryer", "Off", 0, elect]
+        
+
+    def toggle_dishwasher(self, timestamp, wtr, elect):
+        self.dishwasher = not self.dishwasher
+
+        if self.dishwasher == True:
+            self.df.loc[len(self.df.index)] = [timestamp, "dishwasher", "On", 0, 0]
+        else:
+            self.df.loc[len(self.df.index)] = [timestamp, "dishwasher", "Off", wtr, elect]
+
+    def toggle_stove(self, timestamp, elect):
+        self.stove = not self.stove
+
+        if self.stove == True:
+            self.df.loc[len(self.df.index)] = [timestamp, "stove", "On", 0, 0]
+        else:
+            self.df.loc[len(self.df.index)] = [timestamp, "stove", "Off", 0, elect]
+
+    def toggle_oven(self, timestamp, elect):
+        self.oven = not self.oven
+
+        if self.oven == True:
+            self.df.loc[len(self.df.index)] = [timestamp, "oven", "On", 0, 0]
+        else:
+            self.df.loc[len(self.df.index)] = [timestamp, "oven", "Off", 0, elect]
+
+    def toggle_microwave(self, timestamp, elect):
+        self.microwave = not self.microwave
+
+        if self.oven == True:
+            self.df.loc[len(self.df.index)] = [timestamp, "microwave", "On", 0, 0]
+        else:
+            self.df.loc[len(self.df.index)] = [timestamp, "microwave", "Off", 0, elect]
+
+    def toggle_fridge(self, timestamp, elect):
+        self.fridge = not self.fridge
+
+        if self.fridge == True:
+            self.df.loc[len(self.df.index)] = [timestamp, "fridge", "On", 0, 0]
+        else:
+            self.df.loc[len(self.df.index)] = [timestamp, "fridge", "Off", 0, elect]
+
+    # self.hvac = False # 3500w
 
     def get_df(self):
         return self.df
