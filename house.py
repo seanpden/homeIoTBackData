@@ -4,16 +4,16 @@ from datetime import datetime, timedelta
 class House:
     def __init__(self) -> None:
         # Doors - 30 seconds, 16/day enter/exit M-F, 32/day e/e S-S
-        self.door_front = False
+        self.door_front = False # DONE
         self.door_back = False
         self.door_garage_out = False
         self.door_garage_one = False
         self.door_garage_two = False
  
         # Lights - 60 watts, 5:00 - 7:30, 16:00 - 22:30
-        self.bedroom_overhead_light = False 
-        self.bedroom_lamp_one = False
-        self.bedroom_lamp_two = False
+        self.bedroom_overhead_light = False # DONE
+        self.bedroom_lamp_one = False # DONE
+        self.bedroom_lamp_two = False # DONE
         self.bath_light_one = False
         self.bath_light_two = False
         self.lr_overhead_light = False
@@ -22,7 +22,7 @@ class House:
         self.kitchen_overhead_light = False
 
         # TVs
-        self.bedroom_TV = False # 100 watts, 2hr/day MF, 4hr/day SS
+        self.bedroom_TV = False # 100 watts, 2hr/day MF, 4hr/day SS DONE
         self.lr_tv = False # 636 watts, 4hr/day MF, 8hr/day SS
 
         # Baths - Exhaust fans 30 w
@@ -86,89 +86,105 @@ class House:
         self.bedroom_overhead_light = not self.bedroom_overhead_light
 
         if self.bedroom_overhead_light == True:
-            self.df.loc[len(self.df.index)] = [timestamp, "bedroom_overhead_light", "Open", 0, 0]
+            self.df.loc[len(self.df.index)] = [timestamp, "bedroom_overhead_light", "On", 0, 0]
         else:
-            self.df.loc[len(self.df.index)] = [timestamp, "bedroom_overhead_light", "Close", 0, elect]
+            self.df.loc[len(self.df.index)] = [timestamp, "bedroom_overhead_light", "Off", 0, elect]
 
-    def toggle_bedroom_lamp_one(self, timestamp):
+    def toggle_bedroom_lamp_one(self, timestamp, elect):
         self.bedroom_lamp_one = not self.bedroom_lamp_one
 
         if self.bedroom_lamp_one == True:
-            self.df.loc[len(self.df.index)] = [timestamp, "bedroom_lamp_one", "Open", 0, 0]
+            self.df.loc[len(self.df.index)] = [timestamp, "bedroom_lamp_one", "On", 0, 0]
         else:
-            self.df.loc[len(self.df.index)] = [timestamp, "bedroom_lamp_one", "Close", 0, 0]
+            self.df.loc[len(self.df.index)] = [timestamp, "bedroom_lamp_one", "Off", 0, elect]
 
-    def toggle_bedroom_lamp_two(self, timestamp):
+    def toggle_bedroom_lamp_two(self, timestamp, elect):
         self.bedroom_lamp_two = not self.bedroom_lamp_two
 
         if self.bedroom_lamp_two == True:
-            self.df.loc[len(self.df.index)] = [timestamp, "bedroom_lamp_two", "Open", 0, 0]
+            self.df.loc[len(self.df.index)] = [timestamp, "bedroom_lamp_two", "On", 0, elect]
         else:
-            self.df.loc[len(self.df.index)] = [timestamp, "bedroom_lamp_two", "Close", 0, 0]
+            self.df.loc[len(self.df.index)] = [timestamp, "bedroom_lamp_two", "Off", 0, 0]
 
-    def toggle_bath_light_one(self, timestamp):
+    def toggle_bath_light_one(self, timestamp, elect):
         self.bath_light_one = not self.bath_light_one
 
         if self.bath_light_one == True:
-            self.df.loc[len(self.df.index)] = [timestamp, "bath_light_one", "Open", 0, 0]
+            self.df.loc[len(self.df.index)] = [timestamp, "bath_light_one", "On", 0, 0]
         else:
-            self.df.loc[len(self.df.index)] = [timestamp, "bath_light_one", "Close", 0, 0]
+            self.df.loc[len(self.df.index)] = [timestamp, "bath_light_one", "Off", 0, elect]
 
-    def toggle_bath_light_two(self, timestamp):
+    def toggle_bath_light_two(self, timestamp, elect):
         self.bath_light_two = not self.bath_light_two
 
         if self.bath_light_two == True:
-            self.df.loc[len(self.df.index)] = [timestamp, "bath_light_two", "Open", 0, 0]
+            self.df.loc[len(self.df.index)] = [timestamp, "bath_light_two", "On", 0, 0]
         else:
-            self.df.loc[len(self.df.index)] = [timestamp, "bath_light_two", "Close", 0, 0]
+            self.df.loc[len(self.df.index)] = [timestamp, "bath_light_two", "Off", 0, elect]
 
-    def toggle_lr_overhead_light(self, timestamp):
+    def toggle_lr_overhead_light(self, timestamp, elect):
         self.lr_overhead_light = not self.lr_overhead_light
 
         if self.lr_overhead_light == True:
-            self.df.loc[len(self.df.index)] = [timestamp, "lr_overhead_light", "Open", 0, 0]
+            self.df.loc[len(self.df.index)] = [timestamp, "lr_overhead_light", "On", 0, 0]
         else:
-            self.df.loc[len(self.df.index)] = [timestamp, "lr_overhead_light", "Close", 0, 0]
+            self.df.loc[len(self.df.index)] = [timestamp, "lr_overhead_light", "Off", 0, elect]
 
-    def toggle_lr_lamp_one(self, timestamp):
+    def toggle_lr_lamp_one(self, timestamp, elect):
         self.lr_lamp_one = not self.lr_lamp_one
 
         if self.lr_lamp_one == True:
-            self.df.loc[len(self.df.index)] = [timestamp, "lr_lamp_one", "Open", 0, 0]
+            self.df.loc[len(self.df.index)] = [timestamp, "lr_lamp_one", "On", 0, 0]
         else:
-            self.df.loc[len(self.df.index)] = [timestamp, "lr_lamp_one", "Close", 0, 0]
+            self.df.loc[len(self.df.index)] = [timestamp, "lr_lamp_one", "off", 0, elect]
 
-    def toggle_lr_lamp_two(self, timestamp):
+    def toggle_lr_lamp_two(self, timestamp, elect):
         self.lr_lamp_two = not self.lr_lamp_two
 
         if self.lr_lamp_two == True:
-            self.df.loc[len(self.df.index)] = [timestamp, "lr_lamp_two", "Open", 0, 0]
+            self.df.loc[len(self.df.index)] = [timestamp, "lr_lamp_two", "On", 0, 0]
         else:
-            self.df.loc[len(self.df.index)] = [timestamp, "lr_lamp_two", "Close", 0, 0]
+            self.df.loc[len(self.df.index)] = [timestamp, "lr_lamp_two", "Off", 0, elect]
 
-    def toggle_kitchen_overhead_light(self, timestamp):
+    def toggle_kitchen_overhead_light(self, timestamp, elect):
         self.kitchen_overhead_light = not self.kitchen_overhead_light
 
         if self.kitchen_overhead_light == True:
-            self.df.loc[len(self.df.index)] = [timestamp, "kitchen_overhead_light", "Open", 0, 0]
+            self.df.loc[len(self.df.index)] = [timestamp, "kitchen_overhead_light", "On", 0, 0]
         else:
-            self.df.loc[len(self.df.index)] = [timestamp, "kitchen_overhead_light", "Close", 0, 0]
+            self.df.loc[len(self.df.index)] = [timestamp, "kitchen_overhead_light", "Off", 0, elect]
 
-    def toggle_bedroom_TV(self, timestamp):
+    def toggle_bedroom_TV(self, timestamp, elect):
         self.bedroom_TV = not self.bedroom_TV
 
         if self.bedroom_TV == True:
-            self.df.loc[len(self.df.index)] = [timestamp, "bedroom_TV", "Open", 0, 0]
+            self.df.loc[len(self.df.index)] = [timestamp, "bedroom_TV", "On", 0, 0]
         else:
-            self.df.loc[len(self.df.index)] = [timestamp, "bedroom_TV", "Close", 0, 0]
+            self.df.loc[len(self.df.index)] = [timestamp, "bedroom_TV", "Off", 0, elect]
 
-    def toggle_lr_tv(self, timestamp):
+    def toggle_lr_tv(self, timestamp, elect):
         self.lr_tv = not self.lr_tv
 
         if self.lr_tv == True:
-            self.df.loc[len(self.df.index)] = [timestamp, "lr_tv", "Open", 0, 0]
+            self.df.loc[len(self.df.index)] = [timestamp, "lr_tv", "On", 0, 0]
         else:
-            self.df.loc[len(self.df.index)] = [timestamp, "lr_tv", "Close", 0, 0]
+            self.df.loc[len(self.df.index)] = [timestamp, "lr_tv", "Off", 0, elect]
+
+    def toggle_bath(self, timestamp, wtr):
+        self.bath = not self.bath
+
+        if self.bath == True:
+            self.df.loc[len(self.df.index)] = [timestamp, "bath", "On", 0, 0]
+        else:
+            self.df.loc[len(self.df.index)] = [timestamp, "bath", "Off", wtr, 0]
+    
+    def toggle_shower(self, timestamp, wtr):
+        self.shower = not self.shower
+
+        if self.bath == True:
+            self.df.loc[len(self.df.index)] = [timestamp, "shower", "On", 0, 0]
+        else:
+            self.df.loc[len(self.df.index)] = [timestamp, "shower", "Off", wtr, 0]
 
     def get_df(self):
         return self.df
