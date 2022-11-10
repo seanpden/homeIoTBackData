@@ -1,4 +1,4 @@
-import pandas as pd
+import psycopg2
 from datetime import datetime, timedelta
 
 class House:
@@ -40,229 +40,236 @@ class House:
         self.htwater = False # 4500w
         self.hvac = False # 3500w
 
-        self.df = {"Time": [], "Device": [], "Action": [], "Water Usage": [], "Electric Usage": []}
-        self.df = pd.DataFrame(self.df)
 
-    def toggle_door_front(self, timestamp):
+    def toggle_door_front(self, timestamp, cur):
         self.door_front = not self.door_front
 
         if self.door_front == True:
-            self.df.loc[len(self.df.index)] = [timestamp, "door_front", "Open", 0, 0]
+            cur.execute("INSERT INTO events (time, type, status) VALUES (%s, %s, %s)", (timestamp, "door_front", True))
         else:
-            self.df.loc[len(self.df.index)] = [timestamp, "door_front", "Close", 0, 0]
+            cur.execute("INSERT INTO events (time, type, status) VALUES (%s, %s, %s)", (timestamp, "door_front", False))
 
-    def toggle_door_back(self, timestamp):
+    def toggle_door_back(self, timestamp, cur):
         self.door_back = not self.door_back
 
         if self.door_back == True:
-            self.df.loc[len(self.df.index)] = [timestamp, "door_back", "Open", 0, 0]
+            cur.execute("INSERT INTO events (time, type, status) VALUES (%s, %s, %s)", (timestamp, "door_back", True))
         else:
-            self.df.loc[len(self.df.index)] = [timestamp, "door_back", "Close", 0, 0]
+            cur.execute("INSERT INTO events (time, type, status) VALUES (%s, %s, %s)", (timestamp, "door_back", False))
 
-    def toggle_door_garage_out(self, timestamp):
+    def toggle_door_garage_out(self, timestamp, cur):
         self.door_garage_out = not self.door_garage_out
 
         if self.door_garage_out == True:
-            self.df.loc[len(self.df.index)] = [timestamp, "door_garage_out", "Open", 0, 0]
+            cur.execute("INSERT INTO events (time, type, status) VALUES (%s, %s, %s)", (timestamp, "garage_door_out", True))
         else:
-            self.df.loc[len(self.df.index)] = [timestamp, "door_garage_out", "Close", 0, 0]
+            cur.execute("INSERT INTO events (time, type, status) VALUES (%s, %s, %s)", (timestamp, "garage_door_out", False))
 
-    def toggle_door_garage_one(self, timestamp):
+    def toggle_door_garage_one(self, timestamp, cur):
         self.door_garage_one = not self.door_garage_one
 
         if self.door_garage_one == True:
-            self.df.loc[len(self.df.index)] = [timestamp, "door_garage_one", "Open", 0, 0]
+            cur.execute("INSERT INTO events (time, type, status) VALUES (%s, %s, %s)", (timestamp, "garage_door_one", True))
         else:
-            self.df.loc[len(self.df.index)] = [timestamp, "door_garage_one", "Close", 0, 0]
+            cur.execute("INSERT INTO events (time, type, status) VALUES (%s, %s, %s)", (timestamp, "garage_door_one", False))
 
-    def toggle_door_garage_two(self, timestamp):
+    def toggle_door_garage_two(self, timestamp, cur):
         self.door_garage_two = not self.door_garage_two
 
         if self.door_garage_two == True:
-            self.df.loc[len(self.df.index)] = [timestamp, "door_garage_two", "Open", 0, 0]
+            cur.execute("INSERT INTO events (time, type, status) VALUES (%s, %s, %s)", (timestamp, "garage_door_two", True))
         else:
-            self.df.loc[len(self.df.index)] = [timestamp, "door_garage_two", "Close", 0, 0]
+            cur.execute("INSERT INTO events (time, type, status) VALUES (%s, %s, %s)", (timestamp, "garage_door_two", False))
 
-    def toggle_bedroom_overhead_light(self, timestamp, elect):
+    def toggle_bedroom_overhead_light(self, timestamp, elect, cur):
         self.bedroom_overhead_light = not self.bedroom_overhead_light
 
         if self.bedroom_overhead_light == True:
-            self.df.loc[len(self.df.index)] = [timestamp, "bedroom_overhead_light", "On", 0, 0]
+            cur.execute("INSERT INTO events (time, type, status) VALUES (%s, %s, %s)", (timestamp, "bedroom_overhead_light", True))
         else:
-            self.df.loc[len(self.df.index)] = [timestamp, "bedroom_overhead_light", "Off", 0, elect]
+            cur.execute("INSERT INTO events (time, type, status) VALUES (%s, %s, %s)", (timestamp, "bedroom_overhead_light", False))
+            cur.execute("INSERT INTO electric (cost, time) VALUES (%s, %s)", (elect, timestamp))
 
-    def toggle_bedroom_lamp_one(self, timestamp, elect):
+    def toggle_bedroom_lamp_one(self, timestamp, elect, cur):
         self.bedroom_lamp_one = not self.bedroom_lamp_one
 
         if self.bedroom_lamp_one == True:
-            self.df.loc[len(self.df.index)] = [timestamp, "bedroom_lamp_one", "On", 0, 0]
+            cur.execute("INSERT INTO events (time, type, status) VALUES (%s, %s, %s)", (timestamp, "bedroom_lamp_one", True))
         else:
-            self.df.loc[len(self.df.index)] = [timestamp, "bedroom_lamp_one", "Off", 0, elect]
+            cur.execute("INSERT INTO events (time, type, status) VALUES (%s, %s, %s)", (timestamp, "bedroom_lamp_one", False))
+            cur.execute("INSERT INTO electric (cost, time) VALUES (%s, %s)", (elect, timestamp))
 
-    def toggle_bedroom_lamp_two(self, timestamp, elect):
+    def toggle_bedroom_lamp_two(self, timestamp, elect, cur):
         self.bedroom_lamp_two = not self.bedroom_lamp_two
 
         if self.bedroom_lamp_two == True:
-            self.df.loc[len(self.df.index)] = [timestamp, "bedroom_lamp_two", "On", 0, elect]
+            cur.execute("INSERT INTO events (time, type, status) VALUES (%s, %s, %s)", (timestamp, "bedroom_lamp_two", True))
         else:
-            self.df.loc[len(self.df.index)] = [timestamp, "bedroom_lamp_two", "Off", 0, 0]
+            cur.execute("INSERT INTO events (time, type, status) VALUES (%s, %s, %s)", (timestamp, "bedroom_lamp_two", False))
+            cur.execute("INSERT INTO electric (cost, time) VALUES (%s, %s)", (elect, timestamp))
 
-    def toggle_bath_light_one(self, timestamp, elect):
+    def toggle_bath_light_one(self, timestamp, elect, cur):
         self.bath_light_one = not self.bath_light_one
 
         if self.bath_light_one == True:
-            self.df.loc[len(self.df.index)] = [timestamp, "bath_light_one", "On", 0, 0]
+            cur.execute("INSERT INTO events (time, type, status) VALUES (%s, %s, %s)", (timestamp, "bath_light_one", True))
         else:
-            self.df.loc[len(self.df.index)] = [timestamp, "bath_light_one", "Off", 0, elect]
+            cur.execute("INSERT INTO events (time, type, status) VALUES (%s, %s, %s)", (timestamp, "bath_light_one", False))
+            cur.execute("INSERT INTO electric (cost, time) VALUES (%s, %s)", (elect, timestamp))
 
-    def toggle_bath_light_two(self, timestamp, elect):
+    def toggle_bath_light_two(self, timestamp, elect, cur):
         self.bath_light_two = not self.bath_light_two
 
         if self.bath_light_two == True:
-            self.df.loc[len(self.df.index)] = [timestamp, "bath_light_two", "On", 0, 0]
+            cur.execute("INSERT INTO events (time, type, status) VALUES (%s, %s, %s)", (timestamp, "bath_light_two", True))
         else:
-            self.df.loc[len(self.df.index)] = [timestamp, "bath_light_two", "Off", 0, elect]
+            cur.execute("INSERT INTO events (time, type, status) VALUES (%s, %s, %s)", (timestamp, "bath_light_two", False))
+            cur.execute("INSERT INTO electric (cost, time) VALUES (%s, %s)", (elect, timestamp))
 
-    def toggle_lr_overhead_light(self, timestamp, elect):
+    def toggle_lr_overhead_light(self, timestamp, elect, cur):
         self.lr_overhead_light = not self.lr_overhead_light
 
         if self.lr_overhead_light == True:
-            self.df.loc[len(self.df.index)] = [timestamp, "lr_overhead_light", "On", 0, 0]
+            cur.execute("INSERT INTO events (time, type, status) VALUES (%s, %s, %s)", (timestamp, "lr_overhead_light", True))
         else:
-            self.df.loc[len(self.df.index)] = [timestamp, "lr_overhead_light", "Off", 0, elect]
+            cur.execute("INSERT INTO events (time, type, status) VALUES (%s, %s, %s)", (timestamp, "lr_overhead_light", False))
+            cur.execute("INSERT INTO electric (cost, time) VALUES (%s, %s)", (elect, timestamp))
 
-    def toggle_lr_lamp_one(self, timestamp, elect):
+    def toggle_lr_lamp_one(self, timestamp, elect, cur):
         self.lr_lamp_one = not self.lr_lamp_one
 
         if self.lr_lamp_one == True:
-            self.df.loc[len(self.df.index)] = [timestamp, "lr_lamp_one", "On", 0, 0]
+            cur.execute("INSERT INTO events (time, type, status) VALUES (%s, %s, %s)", (timestamp, "lr_lamp_one", True))
         else:
-            self.df.loc[len(self.df.index)] = [timestamp, "lr_lamp_one", "off", 0, elect]
+            cur.execute("INSERT INTO events (time, type, status) VALUES (%s, %s, %s)", (timestamp, "lr_lamp_one", False))
+            cur.execute("INSERT INTO electric (cost, time) VALUES (%s, %s)", (elect, timestamp))
 
-    def toggle_lr_lamp_two(self, timestamp, elect):
+    def toggle_lr_lamp_two(self, timestamp, elect, cur):
         self.lr_lamp_two = not self.lr_lamp_two
 
         if self.lr_lamp_two == True:
-            self.df.loc[len(self.df.index)] = [timestamp, "lr_lamp_two", "On", 0, 0]
+            cur.execute("INSERT INTO events (time, type, status) VALUES (%s, %s, %s)", (timestamp, "lr_lamp_two", True))
         else:
-            self.df.loc[len(self.df.index)] = [timestamp, "lr_lamp_two", "Off", 0, elect]
+            cur.execute("INSERT INTO events (time, type, status) VALUES (%s, %s, %s)", (timestamp, "lr_lamp_two", False))
+            cur.execute("INSERT INTO electric (cost, time) VALUES (%s, %s)", (elect, timestamp))
 
-    def toggle_kitchen_overhead_light(self, timestamp, elect):
+    def toggle_kitchen_overhead_light(self, timestamp, elect, cur):
         self.kitchen_overhead_light = not self.kitchen_overhead_light
 
         if self.kitchen_overhead_light == True:
-            self.df.loc[len(self.df.index)] = [timestamp, "kitchen_overhead_light", "On", 0, 0]
+            cur.execute("INSERT INTO events (time, type, status) VALUES (%s, %s, %s)", (timestamp, "kitchen_overhead_light", True))
         else:
-            self.df.loc[len(self.df.index)] = [timestamp, "kitchen_overhead_light", "Off", 0, elect]
+            cur.execute("INSERT INTO events (time, type, status) VALUES (%s, %s, %s)", (timestamp, "kitchen_overhead_light", False))
+            cur.execute("INSERT INTO electric (cost, time) VALUES (%s, %s)", (elect, timestamp))
 
-    def toggle_bedroom_TV(self, timestamp, elect):
+    def toggle_bedroom_TV(self, timestamp, elect, cur):
         self.bedroom_TV = not self.bedroom_TV
 
         if self.bedroom_TV == True:
-            self.df.loc[len(self.df.index)] = [timestamp, "bedroom_TV", "On", 0, 0]
+            cur.execute("INSERT INTO events (time, type, status) VALUES (%s, %s, %s)", (timestamp, "bedroom_TV", True))
         else:
-            self.df.loc[len(self.df.index)] = [timestamp, "bedroom_TV", "Off", 0, elect]
+            cur.execute("INSERT INTO events (time, type, status) VALUES (%s, %s, %s)", (timestamp, "bedroom_TV", False))
+            cur.execute("INSERT INTO electric (cost, time) VALUES (%s, %s)", (elect, timestamp))
 
-    def toggle_lr_tv(self, timestamp, elect):
+    def toggle_lr_tv(self, timestamp, elect, cur):
         self.lr_tv = not self.lr_tv
 
         if self.lr_tv == True:
-            self.df.loc[len(self.df.index)] = [timestamp, "lr_tv", "On", 0, 0]
+            cur.execute("INSERT INTO events (time, type, status) VALUES (%s, %s, %s)", (timestamp, "lr_tv", True))
         else:
-            self.df.loc[len(self.df.index)] = [timestamp, "lr_tv", "Off", 0, elect]
+            cur.execute("INSERT INTO events (time, type, status) VALUES (%s, %s, %s)", (timestamp, "lr_tv", False))
+            cur.execute("INSERT INTO electric (cost, time) VALUES (%s, %s)", (elect, timestamp))
 
-    def toggle_bath(self, timestamp, wtr):
+    def toggle_bath(self, timestamp, wtr, cur):
         self.bath = not self.bath
 
         if self.bath == True:
-            self.df.loc[len(self.df.index)] = [timestamp, "bath", "On", 0, 0]
+            cur.execute("INSERT INTO events (time, type, status) VALUES (%s, %s, %s)", (timestamp, "bath", True))
         else:
-            self.df.loc[len(self.df.index)] = [timestamp, "bath", "Off", wtr, 0]
+            cur.execute("INSERT INTO events (time, type, status) VALUES (%s, %s, %s)", (timestamp, "bath", False))
+            cur.execute("INSERT INTO water (cost, time) VALUES (%s, %s)", (wtr, timestamp))
 
-    def toggle_htwater(self, timestamp, wtr, elect):
+    def toggle_htwater(self, timestamp, wtr, elect, cur):
         self.htwater = not self.htwater
 
         if self.htwater == True:
-            self.df.loc[len(self.df.index)] = [timestamp, "water heater", "On", 0, 0]
+            cur.execute("INSERT INTO events (time, type, status) VALUES (%s, %s, %s)", (timestamp, "htwater", True))
         else:
-            self.df.loc[len(self.df.index)] = [timestamp, "water heater", "Off", wtr, elect]
+            cur.execute("INSERT INTO events (time, type, status) VALUES (%s, %s, %s)", (timestamp, "bath", False))
+            cur.execute("INSERT INTO water (cost, time) VALUES (%s, %s)", (wtr, timestamp))
+            cur.execute("INSERT INTO electric (cost, time) VALUES (%s, %s)", (elect, timestamp))
     
-    def toggle_shower(self, timestamp, wtr):
+    def toggle_shower(self, timestamp, wtr, cur):
         self.shower = not self.shower
 
         if self.shower == True:
-            self.df.loc[len(self.df.index)] = [timestamp, "shower", "On", 0, 0]
+            cur.execute("INSERT INTO events (time, type, status) VALUES (%s, %s, %s)", (timestamp, "shower", True))
         else:
-            self.df.loc[len(self.df.index)] = [timestamp, "shower", "Off", wtr, 0]
+            cur.execute("INSERT INTO events (time, type, status) VALUES (%s, %s, %s)", (timestamp, "shower", False))
+            cur.execute("INSERT INTO water (cost, time) VALUES (%s, %s)", (wtr, timestamp))
 
-    def toggle_washer(self, timestamp, wtr, elect):
+    def toggle_washer(self, timestamp, wtr, elect, cur):
         self.washer = not self.washer
 
         if self.washer == True:
-            self.df.loc[len(self.df.index)] = [timestamp, "washer", "On", 0, 0]
+            cur.execute("INSERT INTO events (time, type, status) VALUES (%s, %s, %s)", (timestamp, "washer", True))
         else:
-            self.df.loc[len(self.df.index)] = [timestamp, "washer", "Off", wtr, elect]
+            cur.execute("INSERT INTO events (time, type, status) VALUES (%s, %s, %s)", (timestamp, "washer", False))
+            cur.execute("INSERT INTO electric (cost, time) VALUES (%s, %s)", (elect, timestamp))
+            cur.execute("INSERT INTO water (cost, time) VALUES (%s, %s)", (wtr, timestamp))
 
-    def toggle_dryer(self, timestamp, elect):
+    def toggle_dryer(self, timestamp, elect, cur):
         self.dryer = not self.dryer
 
         if self.dryer == True:
-            self.df.loc[len(self.df.index)] = [timestamp, "dryer", "On", 0, 0]
+            cur.execute("INSERT INTO events (time, type, status) VALUES (%s, %s, %s)", (timestamp, "dryer", True))
         else:
-            self.df.loc[len(self.df.index)] = [timestamp, "dryer", "Off", 0, elect]
+            cur.execute("INSERT INTO events (time, type, status) VALUES (%s, %s, %s)", (timestamp, "dryer", False))
+            cur.execute("INSERT INTO electric (cost, time) VALUES (%s, %s)", (elect, timestamp))
         
 
-    def toggle_dishwasher(self, timestamp, wtr, elect):
+    def toggle_dishwasher(self, timestamp, wtr, elect, cur):
         self.dishwasher = not self.dishwasher
 
         if self.dishwasher == True:
-            self.df.loc[len(self.df.index)] = [timestamp, "dishwasher", "On", 0, 0]
+            cur.execute("INSERT INTO events (time, type, status) VALUES (%s, %s, %s)", (timestamp, "dishwasher", True))
         else:
-            self.df.loc[len(self.df.index)] = [timestamp, "dishwasher", "Off", wtr, elect]
+            cur.execute("INSERT INTO events (time, type, status) VALUES (%s, %s, %s)", (timestamp, "dishwasher", False))
+            cur.execute("INSERT INTO electric (cost, time) VALUES (%s, %s)", (elect, timestamp))
+            cur.execute("INSERT INTO water (cost, time) VALUES (%s, %s)", (wtr, timestamp))
 
-    def toggle_stove(self, timestamp, elect):
+    def toggle_stove(self, timestamp, elect, cur):
         self.stove = not self.stove
 
         if self.stove == True:
-            self.df.loc[len(self.df.index)] = [timestamp, "stove", "On", 0, 0]
+            cur.execute("INSERT INTO events (time, type, status) VALUES (%s, %s, %s)", (timestamp, "stove", True))
         else:
-            self.df.loc[len(self.df.index)] = [timestamp, "stove", "Off", 0, elect]
+            cur.execute("INSERT INTO events (time, type, status) VALUES (%s, %s, %s)", (timestamp, "stove", False))
+            cur.execute("INSERT INTO electric (cost, time) VALUES (%s, %s)", (elect, timestamp))
 
-    def toggle_oven(self, timestamp, elect):
+    def toggle_oven(self, timestamp, elect, cur):
         self.oven = not self.oven
 
         if self.oven == True:
-            self.df.loc[len(self.df.index)] = [timestamp, "oven", "On", 0, 0]
+            cur.execute("INSERT INTO events (time, type, status) VALUES (%s, %s, %s)", (timestamp, "oven", True))
         else:
-            self.df.loc[len(self.df.index)] = [timestamp, "oven", "Off", 0, elect]
+            cur.execute("INSERT INTO events (time, type, status) VALUES (%s, %s, %s)", (timestamp, "oven", False))
+            cur.execute("INSERT INTO electric (cost, time) VALUES (%s, %s)", (elect, timestamp))
 
-    def toggle_microwave(self, timestamp, elect):
+    def toggle_microwave(self, timestamp, elect, cur):
         self.microwave = not self.microwave
 
         if self.oven == True:
-            self.df.loc[len(self.df.index)] = [timestamp, "microwave", "On", 0, 0]
+            cur.execute("INSERT INTO events (time, type, status) VALUES (%s, %s, %s)", (timestamp, "microwave", True))
         else:
-            self.df.loc[len(self.df.index)] = [timestamp, "microwave", "Off", 0, elect]
+            cur.execute("INSERT INTO events (time, type, status) VALUES (%s, %s, %s)", (timestamp, "microwave", False))
+            cur.execute("INSERT INTO electric (cost, time) VALUES (%s, %s)", (elect, timestamp))
 
-    def toggle_fridge(self, timestamp, elect):
+    def toggle_fridge(self, timestamp, elect, cur):
         self.fridge = not self.fridge
 
         if self.fridge == True:
-            self.df.loc[len(self.df.index)] = [timestamp, "fridge", "On", 0, 0]
+            cur.execute("INSERT INTO events (time, type, status) VALUES (%s, %s, %s)", (timestamp, "fridge", True))
         else:
-            self.df.loc[len(self.df.index)] = [timestamp, "fridge", "Off", 0, elect]
-
-    # self.hvac = False # 3500w
-
-    def get_df(self):
-        return self.df
-
-    def export_df(self, how):
-        if how == "CSV":
-            self.df.to_csv()
-
-if __name__ == "__main__":
-    hs = House()
-    hs.toggle_door_front(datetime.now())
-    hs.toggle_door_front(datetime.now() + timedelta(seconds=+30))
-    print(hs.get_df())
+            cur.execute("INSERT INTO events (time, type, status) VALUES (%s, %s, %s)", (timestamp, "fridge", False))
+            cur.execute("INSERT INTO electric (cost, time) VALUES (%s, %s)", (elect, timestamp))
