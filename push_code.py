@@ -1,0 +1,16 @@
+import psycopg2
+
+conn = psycopg2.connect(host="138.26.48.83", database="Team5DB", user="Team5", password="team5")
+cur = conn.cursor()
+f = open('hvac.csv', 'r')
+cur.copy_from(f, 'hvac', sep=',', columns=('time', 'interiortemp', 'exteriortemp', 'targettemp'))
+f.close()
+f = open('electricdf.csv', 'r')
+cur.copy_from(f, 'electric', sep=',', columns=('cost', 'time'))
+f.close()
+f = open('events.csv', 'r')
+cur.copy_from(f, 'events', sep=',', columns=('time', 'type', 'status'))
+f.close()
+conn.commit()
+cur.close()
+conn.close()
