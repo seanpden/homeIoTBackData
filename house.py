@@ -273,3 +273,72 @@ class House:
         else:
             cur.execute("INSERT INTO events (time, type, status) VALUES (%s, %s, %s)", (timestamp, "fridge", False))
             cur.execute("INSERT INTO electric (cost, time) VALUES (%s, %s)", (elect, timestamp))
+
+    def toggle_hvac(self, timestamp, elect, cur):
+        self.hvac = not self.hvac
+
+        if self.hvac == True:
+            cur.execute("INSERT INTO events (time, type, status) VALUES (%s, %s, %s)", (timestamp, "hvac", True))
+        else:
+            cur.execute("INSERT INTO events (time, type, status) VALUES (%s, %s, %s)", (timestamp, "hvac", False))
+            cur.execute("INSERT INTO electric (cost, time) VALUES (%s, %s)", (elect, timestamp))
+
+    def update_fridge(self, timestamp, cur):
+        cur.execute("INSERT INTO electric (cost, time) VALUES (%s, %s)", (150/120, timestamp))
+
+    def set_door_front(self, bool):
+        self.door_front = bool
+
+    def set_door_back(self, bool):
+        self.door_back = bool
+
+    def set_door_garage_out(self, bool):
+        self.door_garage_out = bool
+
+    def set_door_garage_one(self, bool):
+        self.door_garage_one = bool
+    
+    def set_door_garage_two(self, bool):
+        self.door_garage_two = bool
+
+    def set_bedroom_overhead_light(self, bool):
+        self.bedroom_overhead_light = bool
+
+    def set_bedroom_lamp_one(self, bool):
+        self.bedroom_lamp_one = bool
+
+    def set_bedroom_lamp_two(self, bool):
+        self.bedroom_lamp_two = bool
+
+    def set_bath_light_one(self, bool):
+        self.bath_light_one = bool
+
+    def set_bath_light_two(self, bool):
+        self.bath_light_two = bool
+
+    def set_lr_overhead_light(self, bool):
+        self.lr_overhead_light = bool
+
+    def set_lr_lamp_one(self, bool):
+        self.lr_lamp_one = bool
+
+    def set_lr_lamp_two(self, bool):
+        self.lr_lamp_two = bool
+
+    def set_kitchen_overhead_light(self, bool):
+        self.kitchen_overhead_light = bool
+
+    def set_bedroom_tv(self, bool):
+        self.bedroom_TV = bool
+
+    def set_lr_tv(self, bool):
+        self.lr_tv = bool
+
+    def set_fridge(self, bool):
+        self.fridge = bool
+
+    def set_hvac(self, bool):
+        self.hvac = bool
+
+    def set_htwater(self, bool):
+        self.htwater = bool
